@@ -11,7 +11,7 @@ import java.util.Map;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     // Логин за ключ = уникальное значение. Но обычно id выполняет эту функцию.
-    private final Map<String, User> users = new HashMap<>();
+    private Map<String, User> users = new HashMap<>();
 
     @Override
     public List<User> getAll() {
