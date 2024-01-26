@@ -32,10 +32,15 @@ public class UserServiceImpl implements UserService {
         checkLoginAndPassword(user);
 
         User userRepo = repository.getUser(user.getLogin());
-        if (userRepo != null && user.getOldPassword().equals(userRepo.getOldPassword())) {
+        // Проверяем наличие пользователя в бд
+        if (Objects.isNull(userRepo)) {
+            throw new NotFoundException("Not user in BD");
+        }
+        // Проверяем пароль.
+        if (user.getOldPassword().equals(userRepo.getOldPassword())) {
             return true;
         } else {
-            throw new NotFoundException("Not user in BD");
+            throw new IllegalArgumentException("Invalid user password");
         }
     }
 
@@ -44,6 +49,7 @@ public class UserServiceImpl implements UserService {
         checkLoginAndPassword(user);
 
         User userRepo = repository.getUser(user.getLogin());
+        // Проверяем есть ли уже такой пользователь в бд.
         if (userRepo != null) {
             //Выбрасываем и перехватываем в хендлере.
             throw new ConflictException("Please change the login");
@@ -56,16 +62,17 @@ public class UserServiceImpl implements UserService {
     public User updatePasswordUser(User user) {
         checkLoginAndPassword(user);
 
-        if (user.getLogin().isBlank()) {
-            throw new IllegalArgumentException("The password cannot be empty");
-        }
-
         User userRepo = repository.getUser(user.getLogin());
-        if (userRepo != null && Objects.equals(user.getOldPassword(), userRepo.getOldPassword())) {
+        // Проверяем наличие пользователя в бд
+        if (Objects.isNull(userRepo)) {
+            throw new NotFoundException("Not user in BD");
+        }
+        // Проверяем пароль и обновляем.
+        if (Objects.equals(user.getOldPassword(), userRepo.getOldPassword())) {
             userRepo.setOldPassword(user.getNewPassword());
             return repository.addUser(userRepo);
         } else {
-            throw new ConflictException("Invalid user password");
+            throw new IllegalArgumentException("Invalid user login or password");
         }
     }
 
