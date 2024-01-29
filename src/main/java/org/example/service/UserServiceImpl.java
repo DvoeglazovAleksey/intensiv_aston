@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         // Проверяю нет ли в базе пользователя с таким логином который хотим создать.
         User checkUser = repository.findByLogin(userInfo.getLogin());
         if (Objects.isNull(checkUser)) {
-            User userRepo = repository.addUser(UserMapper.toUser(userInfo));
+            User userRepo = repository.addAndUpdate(UserMapper.toUser(userInfo));
             return UserMapper.toUserInfo(userRepo);
         } else {
             throw new ConflictException("User with login =  " + userInfo.getLogin() +
@@ -84,6 +84,6 @@ public class UserServiceImpl implements UserService {
         if (!userInfo.getLastName().isBlank()) {
             userRepo.setLastName(userInfo.getLastName());
         }
-        return UserMapper.toUserInfo(repository.addUser(userRepo));
+        return UserMapper.toUserInfo(repository.addAndUpdate(userRepo));
     }
 }

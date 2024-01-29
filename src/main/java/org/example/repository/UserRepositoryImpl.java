@@ -54,7 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public User addUser(User user) {
+    public User addAndUpdate(User user) {
         try (Session session = sessionFactoryConfig.getSession()) {
             session.beginTransaction();
             session.saveOrUpdate(user);
