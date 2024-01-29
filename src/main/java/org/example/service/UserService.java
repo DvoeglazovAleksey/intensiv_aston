@@ -1,15 +1,15 @@
 package org.example.service;
 
-import org.example.dto.User;
+import org.example.dto.UserInfo;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getAllUsers();
+    List<UserInfo> getAllUsers();
 
-    boolean getAuthentication(User user);
+    UserInfo getAuthentication(long userId);
 
-    User addNewUser(User user);
+    UserInfo addNewUser(UserInfo userInfo);
 
-    User updatePasswordUser(User user);
+    UserInfo updateUserName(long id, UserInfo userInfo);
 }

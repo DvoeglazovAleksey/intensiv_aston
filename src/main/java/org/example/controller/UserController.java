@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.User;
+import org.example.dto.UserInfo;
 import org.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +14,23 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getAllUser() {
+    public List<UserInfo> getAllUser() {
         return userService.getAllUsers();
     }
 
-    // PUT - выбрал без логики, просто свободный.
-    @PutMapping
-    public boolean getAuthentication(@RequestBody User user) {
-        return userService.getAuthentication(user);
+    @GetMapping("/{id}")
+    public UserInfo getAuthentication(@PathVariable long id) {
+        return userService.getAuthentication(id);
     }
 
     @PostMapping
-    public User addNewUser(@RequestBody User user) {
-        return userService.addNewUser(user);
+    public UserInfo addNewUser(@RequestBody UserInfo userInfo) {
+        return userService.addNewUser(userInfo);
     }
 
-    @PatchMapping
-    public User updatePasswordUser(@RequestBody User user) {
-        return userService.updatePasswordUser(user);
+    //    Пароль стал не актуален т.к. ввели id, сделал возможность поменять пользователю имя или фамилию.
+    @PatchMapping("/{id}")
+    public UserInfo updateUserName(@PathVariable long id, @RequestBody UserInfo userInfo) {
+        return userService.updateUserName(id, userInfo);
     }
 }

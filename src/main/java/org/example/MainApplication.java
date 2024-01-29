@@ -3,14 +3,12 @@ package org.example;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
-import org.springframework.web.context.annotation.ApplicationScope;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-public class Main {
+public class MainApplication {
     public static void main(String[] args) throws LifecycleException {
         Tomcat tomcat = new Tomcat();
         tomcat.setSilent(true);

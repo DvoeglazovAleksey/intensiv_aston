@@ -1,31 +1,68 @@
 package org.example.repository;
 
-import org.example.dto.User;
+import org.example.config.SessionFactoryConfig;
+import org.example.entity.User;
+import org.example.exception.exceptions.SqlException;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    // Логин за ключ = уникальное значение. Но обычно id выполняет эту функцию.
-    private final Map<String, User> users = new HashMap<>();
+    private final SessionFactoryConfig sessionFactoryConfig;
 
-    @Override
+    public UserRepositoryImpl(SessionFactoryConfig sessionFactoryConfig) {
+        this.sessionFactoryConfig = sessionFactoryConfig;
+    }
+
+    public User findById(long id) {
+        try (Session session = sessionFactoryConfig.getSession()) {
+            User user = session.get(User.class, id);
+            session.close();
+            return user;
+        } catch (Exception e) {
+            throw new SqlException("There was a problem with the database query = findById");
+        }
+    }
+
+    public User findByLogin(String login) {
+        try (Session session = sessionFactoryConfig.getSession()) {
+            Query query = session.createQuery("from User where login = :paramName");
+            query.setParameter("paramName", login);
+            List<User> users = query.getResultList();
+            session.close();
+            if (users.isEmpty()) {
+                return null;
+            }
+            return users.get(0);
+        } catch (Exception e) {
+            throw new SqlException("There was a problem with the database query = findByLogin");
+        }
+    }
+
     public List<User> getAll() {
-        return new ArrayList<>(users.values());
+        try (Session session = sessionFactoryConfig.getSession()) {
+            List<User> list = session.createCriteria(User.class).list();
+            session.update(list.get(0));
+            session.close();
+            return list;
+        } catch (Exception e) {
+            throw new SqlException("There was a problem with the database query = getAll");
+        }
     }
 
-    @Override
-    public User getUser(String login) {
-        return users.get(login);
-    }
-
-    @Override
     public User addUser(User user) {
-        users.put(user.getLogin(), user);
-        return users.get(user.getLogin());
+        try (Session session = sessionFactoryConfig.getSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(user);
+            session.getTransaction().commit();
+            session.close();
+        } catch (HibernateException e) {
+            throw new SqlException("There was a problem with the database query = addUser");
+        }
+        return user;
     }
 }
