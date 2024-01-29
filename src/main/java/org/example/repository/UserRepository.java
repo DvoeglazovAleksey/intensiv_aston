@@ -1,14 +1,15 @@
 package org.example.repository;
 
-import org.example.dto.User;
+import org.example.entity.User;
 
 import java.util.List;
 
 public interface UserRepository {
+    User findById(long id);
+
+    User findByLogin(String login);
 
     List<User> getAll();
-
-    User getUser(String login);
 
     User addUser(User user);
 }

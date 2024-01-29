@@ -3,6 +3,7 @@ package org.example.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.exceptions.ConflictException;
 import org.example.exception.exceptions.NotFoundException;
+import org.example.exception.exceptions.SqlException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,4 +30,9 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
+    @ExceptionHandler
+    public ResponseEntity<String> handleSqlException(final SqlException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }
