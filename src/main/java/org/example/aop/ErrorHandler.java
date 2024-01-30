@@ -1,9 +1,9 @@
-package org.example.exception;
+package org.example.aop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.exception.exceptions.ConflictException;
-import org.example.exception.exceptions.NotFoundException;
-import org.example.exception.exceptions.SqlException;
+import org.example.exception.ConflictException;
+import org.example.exception.NotFoundException;
+import org.example.exception.SqlException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

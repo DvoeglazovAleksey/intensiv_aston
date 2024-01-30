@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     login varchar(100),
     first_name varchar(100),
     last_name varchar(100),
+    password varchar(50),
     CONSTRAINT uc_User_Login UNIQUE (login)
 );
 

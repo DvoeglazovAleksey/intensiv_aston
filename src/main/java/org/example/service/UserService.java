@@ -1,15 +1,18 @@
 package org.example.service;
 
-import org.example.dto.UserInfo;
+import org.example.dto.AuthenticationUserDto;
+import org.example.dto.CreateUserDto;
+import org.example.dto.ResultUserDto;
+import org.example.dto.UpdateUserPasswordDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<UserInfo> getAllUsers();
+    List<ResultUserDto> getAllUsers();
 
-    UserInfo getAuthentication(long userId);
+    ResultUserDto getAuthentication(long userId, AuthenticationUserDto authenticationUserDto);
 
-    UserInfo addNewUser(UserInfo userInfo);
+    ResultUserDto create(CreateUserDto createUserDto);
 
-    UserInfo updateUserName(long id, UserInfo userInfo);
+    ResultUserDto updatePassword(long id, UpdateUserPasswordDto updateUserPasswordDto);
 }

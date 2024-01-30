@@ -1,17 +1,18 @@
 package org.example.mapper;
 
 import lombok.experimental.UtilityClass;
-import org.example.dto.UserInfo;
+import org.example.dto.CreateUserDto;
+import org.example.dto.ResultUserDto;
 import org.example.entity.User;
 
 @UtilityClass
 public class UserMapper {
-    public UserInfo toUserInfo(User user) {
-        return new UserInfo(user.getLogin(), user.getFirstName(), user.getLastName());
+    public ResultUserDto toResultUserDto(User user) {
+        return new ResultUserDto(user.getLogin(), user.getFirstName(), user.getLastName());
     }
 
-    public User toUser(UserInfo userInfo) {
-        return new User(null, userInfo.getLogin(), userInfo.getFirstName(), userInfo.getLastName());
+    public User createUserDtoToUser(CreateUserDto createUserDto) {
+        return new User(null, createUserDto.getLogin(), createUserDto.getFirstName(),
+                createUserDto.getLastName(), createUserDto.getPassword());
     }
-
 }

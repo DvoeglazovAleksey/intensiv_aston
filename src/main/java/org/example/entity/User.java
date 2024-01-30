@@ -23,4 +23,11 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
+    private String password;
+
+    public User(Long id, String login, String oldPassword) {
+        this.id = id;
+        this.login = login;
+        this.password = oldPassword;
+    }
 }

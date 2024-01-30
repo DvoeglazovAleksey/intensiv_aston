@@ -2,13 +2,11 @@ package org.example.dto;
 
 import lombok.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserInfo {
+public class AuthenticationUserDto {
     private String login;
-    private String firstName;
-    private String lastName;
+    private String password;
 }

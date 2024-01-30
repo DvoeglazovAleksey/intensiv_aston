@@ -2,7 +2,7 @@ package org.example.repository;
 
 import org.example.config.SessionFactoryConfig;
 import org.example.entity.User;
-import org.example.exception.exceptions.SqlException;
+import org.example.exception.SqlException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
