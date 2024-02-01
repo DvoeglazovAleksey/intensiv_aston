@@ -20,10 +20,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User findById(long id) {
         try (Session session = sessionFactoryConfig.getSession()) {
-            User user = session.get(User.class, id);
-            session.close();
-            return user;
-        } catch (Exception e) {
+            return session.get(User.class, id);
+        } catch (HibernateException e) {
             throw new SqlException("There was a problem with the database query = findById");
         }
     }
@@ -33,23 +31,19 @@ public class UserRepositoryImpl implements UserRepository {
             Query query = session.createQuery("from User where login = :paramName");
             query.setParameter("paramName", login);
             List<User> users = query.getResultList();
-            session.close();
             if (users.isEmpty()) {
                 return null;
             }
             return users.get(0);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             throw new SqlException("There was a problem with the database query = findByLogin");
         }
     }
 
     public List<User> getAll() {
         try (Session session = sessionFactoryConfig.getSession()) {
-            List<User> list = session.createCriteria(User.class).list();
-            session.update(list.get(0));
-            session.close();
-            return list;
-        } catch (Exception e) {
+            return (List<User>) session.createCriteria(User.class).list();
+        } catch (HibernateException e) {
             throw new SqlException("There was a problem with the database query = getAll");
         }
     }
@@ -59,7 +53,6 @@ public class UserRepositoryImpl implements UserRepository {
             session.beginTransaction();
             session.saveOrUpdate(user);
             session.getTransaction().commit();
-            session.close();
         } catch (HibernateException e) {
             throw new SqlException("There was a problem with the database query = addUser");
         }
