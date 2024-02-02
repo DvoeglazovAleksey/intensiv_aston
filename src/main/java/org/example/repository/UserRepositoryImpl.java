@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -26,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public User findByLogin(String login) {
+    public Optional<User> findByLogin(String login) {
         try (Session session = sessionFactoryConfig.getSession()) {
             Query query = session.createQuery("from User where login = :paramName");
             query.setParameter("paramName", login);
@@ -34,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
             if (users.isEmpty()) {
                 return null;
             }
-            return users.get(0);
+            return Optional.ofNullable(users.get(0));
         } catch (HibernateException e) {
             throw new SqlException("There was a problem with the database query = findByLogin");
         }

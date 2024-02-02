@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
 //      Проверяем валидные ли поля нового пользователя.
         checkNewUser(createUserDto);
         // Проверяем нет ли в базе пользователя с таким логином который хотим создать.
-        User userRepo = repository.findByLogin(createUserDto.getLogin());
+        Optional<User> userRepo = repository.findByLogin(createUserDto.getLogin());
         if (Objects.isNull(userRepo)) {
             User userResult = repository.addAndUpdate(UserMapper.createUserDtoToUser(createUserDto));
             return UserMapper.toResultUserDto(userResult);
