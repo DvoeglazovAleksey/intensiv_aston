@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ResultUserDto> getAllUsers() {
-        List<User> users = repository.getAll();
+        List<User> users = repository.findAll();
 
         if (users.isEmpty()) {
             return new ArrayList<>();
@@ -40,13 +39,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultUserDto getAuthentication(long id, AuthenticationUserDto authenticationUserDto) {
- //     Проверяем валидные ли пришли поля пользователя.
+        //     Проверяем валидные ли пришли поля пользователя.
         checkUserAuthentication(authenticationUserDto);
 //      Существует ли пользователь.
-        User userRepo = repository.findById(id);
-        if (Objects.isNull(userRepo)) {
-            throw new NotFoundException("User with id = " + id + " does not exist");
-        }
+        User userRepo = repository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with id = " + id + " does not exist"));
+        ;
 //      Проверяем правильный ли логин, пароль ввел пользователь.
         checkLoginAndPassword(userRepo.getPassword(), userRepo.getLogin(),
                 authenticationUserDto.getPassword(), authenticationUserDto.getLogin());
@@ -59,9 +57,9 @@ public class UserServiceImpl implements UserService {
 //      Проверяем валидные ли поля нового пользователя.
         checkNewUser(createUserDto);
         // Проверяем нет ли в базе пользователя с таким логином который хотим создать.
-        Optional<User> userRepo = repository.findByLogin(createUserDto.getLogin());
+        User userRepo = repository.findByLogin(createUserDto.getLogin());
         if (Objects.isNull(userRepo)) {
-            User userResult = repository.addAndUpdate(UserMapper.createUserDtoToUser(createUserDto));
+            User userResult = repository.save(UserMapper.createUserDtoToUser(createUserDto));
             return UserMapper.toResultUserDto(userResult);
         } else {
             throw new ConflictException("User with login =  " + createUserDto.getLogin() +
@@ -74,16 +72,14 @@ public class UserServiceImpl implements UserService {
 //      Проверяем валидные ли поля пришедшего пользователя.
         checkUpdateUser(updateUserPasswordDto);
 //      Проверяем наличие пользователя в бд.
-        User userRepo = repository.findById(id);
-        if (Objects.isNull(userRepo)) {
-            throw new NotFoundException("Not user in BD");
-        }
+        User userRepo = repository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with id = " + id + " does not exist"));
 //      Проверяем логин и старый пароль введенный пользователем.
         checkLoginAndPassword(userRepo.getPassword(), userRepo.getLogin(),
                 updateUserPasswordDto.getOldPassword(), updateUserPasswordDto.getLogin());
 //      Присваиваем новый пароль.
         userRepo.setPassword(updateUserPasswordDto.getNewPassword());
-        return UserMapper.toResultUserDto(repository.addAndUpdate(userRepo));
+        return UserMapper.toResultUserDto(repository.saveAndFlush(userRepo));
     }
 
     private void checkLoginAndPassword(String passwordUserBd, String loginBd, String passwordUser, String loginUser) {
